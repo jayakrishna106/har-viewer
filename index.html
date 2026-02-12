@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAR Viewer Standalone</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>HAR Viewer (Standalone)</h1>
+    <p>Open a HAR file, inspect requests, preview content, and download response bodies.</p>
+  </header>
+
+  <main class="layout">
+    <section class="panel controls">
+      <label for="harFile" class="file-label">Select HAR file</label>
+      <input id="harFile" type="file" accept=".har,application/json" />
+      <div id="summary" class="summary">No HAR loaded.</div>
+      <input id="search" type="search" placeholder="Filter by URL, method, status, or mime type" disabled />
+    </section>
+
+    <section class="panel list-panel">
+      <h2>Entries</h2>
+      <div id="entryList" class="entry-list empty">Load a HAR file to view entries.</div>
+    </section>
+
+    <section class="panel details-panel">
+      <h2 id="detailTitle">Entry details</h2>
+      <div id="details" class="details empty">Select an entry to inspect content.</div>
+    </section>
+  </main>
+
+  <template id="entryTemplate">
+    <button class="entry-item" type="button">
+      <span class="meta-line">
+        <span class="method"></span>
+        <span class="status"></span>
+        <span class="mime"></span>
+      </span>
+      <span class="url"></span>
+    </button>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
