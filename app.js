@@ -2,6 +2,7 @@ const state = {
   entries: [],
   filteredEntries: [],
   activeIndex: null,
+  focusedIndex: null,
 };
 
 const harInput = document.getElementById('harInput');
@@ -37,6 +38,7 @@ harInput.addEventListener('change', async (event) => {
     state.entries = entries;
     state.filteredEntries = entries;
     state.activeIndex = null;
+    state.focusedIndex = entries.length ? 0 : null;
 
     entrySearch.value = '';
     renderEntryList();
@@ -57,6 +59,10 @@ entrySearch.addEventListener('input', () => {
 
   if (state.activeIndex !== null && state.activeIndex >= state.filteredEntries.length) {
     state.activeIndex = null;
+  }
+
+  if (state.focusedIndex !== null && state.focusedIndex >= state.filteredEntries.length) {
+    state.focusedIndex = state.filteredEntries.length ? 0 : null;
   }
 
   renderEntryList();
@@ -107,23 +113,90 @@ function renderEntryList() {
     const statusClass = bucket >= 2 && bucket <= 5 ? `status-${bucket}` : '';
     sub.innerHTML = `${status ? `<span class="status-pill ${statusClass}">${status}</span>` : ''}${type}`;
 
+    button.dataset.index = String(index);
+    button.tabIndex = state.focusedIndex === index ? 0 : -1;
+
     if (index === state.activeIndex) {
       button.classList.add('active');
     }
 
+    button.addEventListener('focus', () => {
+      state.focusedIndex = index;
+      updateRovingFocus();
+    });
+
     button.addEventListener('click', () => {
-      state.activeIndex = index;
-      renderEntryList();
-      renderDetails(entry);
+      selectEntry(index);
+    });
+
+    button.addEventListener('keydown', (event) => {
+      handleEntryKeydown(event, index);
     });
 
     entryList.appendChild(fragment);
   });
+
+  updateRovingFocus();
 }
 
 function showEmptyDetails() {
   details.hidden = true;
   detailsEmpty.hidden = false;
+}
+
+function selectEntry(index) {
+  const entry = state.filteredEntries[index];
+  if (!entry) return;
+
+  state.activeIndex = index;
+  state.focusedIndex = index;
+  renderEntryList();
+  renderDetails(entry);
+
+  focusEntryButton(index);
+}
+
+function handleEntryKeydown(event, index) {
+  if (event.key === 'ArrowDown') {
+    event.preventDefault();
+    moveFocus(index + 1);
+    return;
+  }
+
+  if (event.key === 'ArrowUp') {
+    event.preventDefault();
+    moveFocus(index - 1);
+    return;
+  }
+
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    selectEntry(index);
+  }
+}
+
+function moveFocus(nextIndex) {
+  if (!state.filteredEntries.length) return;
+
+  const safeIndex = Math.max(0, Math.min(nextIndex, state.filteredEntries.length - 1));
+  state.focusedIndex = safeIndex;
+  updateRovingFocus();
+  focusEntryButton(safeIndex);
+}
+
+function focusEntryButton(index) {
+  const button = entryList.querySelector(`.entry-button[data-index="${index}"]`);
+  if (button) {
+    button.focus();
+    button.scrollIntoView({ block: 'nearest' });
+  }
+}
+
+function updateRovingFocus() {
+  entryList.querySelectorAll('.entry-button').forEach((button) => {
+    const idx = Number(button.dataset.index);
+    button.tabIndex = idx === state.focusedIndex ? 0 : -1;
+  });
 }
 
 function renderDetails(entry) {
