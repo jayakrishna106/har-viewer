@@ -1,76 +1,47 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HAR Viewer Standalone</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <header>
-      <h1>HAR Viewer Standalone</h1>
-      <p>Open HAR files, inspect requests/responses, preview text, images, and media, then download any content.</p>
-      <label class="file-picker">
-        <input id="harInput" type="file" accept=".har,application/json" />
-        <span>Select HAR file</span>
-      </label>
-    </header>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HAR Viewer Standalone</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>HAR Viewer (Standalone)</h1>
+    <p>Open a HAR file, inspect requests, preview content, and download response bodies.</p>
+  </header>
 
-    <main>
-      <section class="panel entries-panel">
-        <div class="panel-title-row">
-          <h2>Entries</h2>
-          <input id="entrySearch" type="search" placeholder="Filter by URL, status, method..." />
-        </div>
-        <div id="entryCount" class="meta">No file loaded</div>
-        <ul id="entryList" class="entry-list"></ul>
-      </section>
+  <main class="layout">
+    <section class="panel controls">
+      <label for="harFile" class="file-label">Select HAR file</label>
+      <input id="harFile" type="file" accept=".har,application/json" />
+      <div id="summary" class="summary">No HAR loaded.</div>
+      <input id="search" type="search" placeholder="Filter by URL, method, status, or mime type" disabled />
+    </section>
 
-      <section class="panel details-panel">
-        <h2>Details</h2>
-        <div id="detailsEmpty" class="empty">Choose an entry to inspect request and response details.</div>
-        <div id="details" hidden>
-          <div class="request-summary" id="requestSummary"></div>
-          <div class="button-row">
-            <button id="downloadResponseBtn" type="button">Download response body</button>
-            <button id="downloadRequestBtn" type="button">Download request payload</button>
-          </div>
+    <section class="panel list-panel">
+      <h2>Entries</h2>
+      <div id="entryList" class="entry-list empty">Load a HAR file to view entries.</div>
+    </section>
 
-          <div class="tabs">
-            <button class="tab-btn active" data-tab="response">Response</button>
-            <button class="tab-btn" data-tab="request">Request</button>
-            <button class="tab-btn" data-tab="headers">Headers</button>
-          </div>
+    <section class="panel details-panel">
+      <h2 id="detailTitle">Entry details</h2>
+      <div id="details" class="details empty">Select an entry to inspect content.</div>
+    </section>
+  </main>
 
-          <div id="tab-response" class="tab-panel active">
-            <div id="responseMeta" class="meta"></div>
-            <div id="responsePreview" class="preview"></div>
-          </div>
+  <template id="entryTemplate">
+    <button class="entry-item" type="button">
+      <span class="meta-line">
+        <span class="method"></span>
+        <span class="status"></span>
+        <span class="mime"></span>
+      </span>
+      <span class="url"></span>
+    </button>
+  </template>
 
-          <div id="tab-request" class="tab-panel">
-            <div id="requestMeta" class="meta"></div>
-            <div id="requestPreview" class="preview"></div>
-          </div>
-
-          <div id="tab-headers" class="tab-panel">
-            <h3>Request headers</h3>
-            <pre id="requestHeaders"></pre>
-            <h3>Response headers</h3>
-            <pre id="responseHeaders"></pre>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <template id="entryTemplate">
-      <li>
-        <button class="entry-button" type="button">
-          <span class="entry-main"></span>
-          <span class="entry-sub"></span>
-        </button>
-      </li>
-    </template>
-
-    <script src="app.js"></script>
-  </body>
+  <script src="app.js"></script>
+</body>
 </html>
