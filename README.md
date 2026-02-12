@@ -1,28 +1,22 @@
 # HAR Viewer Standalone
 
-A no-build static web application for inspecting `.har` files locally.
+A lightweight standalone web app for viewing `.har` files.
 
 ## Features
 
 - Load HAR files directly in the browser.
-- Browse all entries with filtering by method, URL, and status.
-- Extra filters for exact status code and media type (MIME contains).
-- Keyboard navigation for entries (↑/↓ to move focus, Enter/Space to select).
-- Multi-select entries and bulk download selected request/response payloads.
+- Browse all entries with filtering.
 - Inspect request/response metadata and headers.
-- Preview response/request bodies:
-  - formatted JSON
-  - plain text
-  - images
-  - audio/video
-- Download request or response body payloads.
+- Preview image, audio, and video responses.
+- View text/JSON payloads.
+- Download any available response body.
 
-## Run
+## Run locally
 
-Open `index.html` directly, or serve the folder:
+This is a static app. Open `index.html` directly, or run a simple web server:
 
 ```bash
 python3 -m http.server 4173
 ```
 
-Then visit <http://localhost:4173>.
+Then open <http://localhost:4173>.
